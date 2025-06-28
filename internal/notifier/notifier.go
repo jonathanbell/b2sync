@@ -9,25 +9,48 @@ import (
 )
 
 type Notifier struct {
-	logger *logger.Logger
+	logger               *logger.Logger
+	useTerminalNotifier  bool
 }
 
 func New(log *logger.Logger) *Notifier {
-	return &Notifier{
+	n := &Notifier{
 		logger: log,
+	}
+	n.checkNotificationMethod()
+	return n
+}
+
+func (n *Notifier) checkNotificationMethod() {
+	_, err := exec.LookPath("terminal-notifier")
+	if err != nil {
+		n.useTerminalNotifier = false
+		n.logger.Warnf("terminal-notifier not found, falling back to osascript: %v", err)
+	} else {
+		n.useTerminalNotifier = true
+		n.logger.Debugf("Using terminal-notifier for notifications")
 	}
 }
 
 func (n *Notifier) sendNotification(title, message string) error {
-	cmd := exec.Command("osascript", "-e", fmt.Sprintf(`display notification "%s" with title "%s"`, message, title))
-	output, err := cmd.CombinedOutput()
+	var cmd *exec.Cmd
+	var method string
 
+	if n.useTerminalNotifier {
+		cmd = exec.Command("terminal-notifier", "-title", title, "-message", message, "-sender", "com.apple.finder")
+		method = "terminal-notifier"
+	} else {
+		cmd = exec.Command("osascript", "-e", fmt.Sprintf(`display notification "%s" with title "%s"`, message, title))
+		method = "osascript"
+	}
+
+	output, err := cmd.CombinedOutput()
 	if err != nil {
-		n.logger.Errorf("Failed to send notification: %v, output: %s", err, string(output))
+		n.logger.Errorf("Failed to send notification via %s: %v, output: %s", method, err, string(output))
 		return err
 	}
 
-	n.logger.Debugf("Notification sent: %s - %s", title, message)
+	n.logger.Debugf("Notification sent via %s: %s - %s", method, title, message)
 	return nil
 }
 
@@ -61,4 +84,16 @@ func (n *Notifier) NotifySyncResults(results []sync.SyncResult, threshold int) {
 		message := fmt.Sprintf("Successfully synced %d files to Backblaze B2", totalFiles)
 		n.sendNotification(title, message)
 	}
+}
+
+func (n *Notifier) NotifyStartup() {
+	title := "B2Sync Started"
+	message := "B2Sync background service has started successfully"
+	n.sendNotification(title, message)
+}
+
+func (n *Notifier) NotifyShutdown() {
+	title := "B2Sync Stopped"
+	message := "B2Sync background service has been stopped"
+	n.sendNotification(title, message)
 }

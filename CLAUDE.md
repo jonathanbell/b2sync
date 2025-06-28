@@ -56,7 +56,7 @@ tail -f ~/Library/Logs/b2sync/b2sync-$(date +%Y-%m-%d).log
 1. **Config** (`config/config.go`): JSON configuration management with custom Duration type, default generation, and path resolution
 2. **Sync** (`sync/sync.go`): B2 CLI wrapper with PID-based concurrency prevention, command execution, and result parsing
 3. **Logger** (`logger/logger.go`): Structured logging with daily rotation, multiple levels (DEBUG/INFO/WARN/ERROR), and multi-writer support
-4. **Notifier** (`notifier/notifier.go`): macOS native notifications via osascript for sync results and errors
+4. **Notifier** (`notifier/notifier.go`): macOS native notifications via terminal-notifier for sync results and errors
 
 ### Entry Point
 
@@ -95,7 +95,8 @@ tail -f ~/Library/Logs/b2sync/b2sync-$(date +%Y-%m-%d).log
 ### External Dependencies
 
 - **Backblaze B2 CLI**: Must be installed and configured (`b2` command in `PATH`)
-- **macOS**: Platform-specific (LaunchAgent, osascript)
+- **terminal-notifier**: Required for macOS notifications (`brew install terminal-notifier`)
+- **macOS**: Platform-specific (LaunchAgent)
 - **Go 1.24.4+**: For building
 
 ### Runtime Behavior
@@ -129,6 +130,9 @@ b2 version
 
 # Verify B2 configuration
 b2 get-account-info
+
+# Check terminal-notifier availability
+terminal-notifier -help
 
 # Check LaunchAgent status
 launchctl list | grep b2sync

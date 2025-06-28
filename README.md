@@ -25,9 +25,16 @@ A background service for macOS that automatically syncs local folders to Backbla
    b2 authorize-account <applicationKeyId> <applicationKey>
    ```
 
-2. **Go 1.19+**: Required for building the application
+2. **terminal-notifier**: Required for macOS notifications.
 
-3. **Backblaze B2 Account**: Active account with configured buckets
+   ```bash
+   # Install via Homebrew
+   brew install terminal-notifier
+   ```
+
+3. **Go 1.19+**: Required for building the application
+
+4. **Backblaze B2 Account**: Active account with configured buckets
 
 ## Installation
 
@@ -175,6 +182,14 @@ If you see "b2 CLI not found" errors:
 1. Ensure B2 CLI is installed and in PATH
 2. Check your PATH in the LaunchAgent environment
 3. Verify B2 CLI works manually: `b2 version`
+
+### Notifications Not Appearing
+
+If macOS notifications are not showing:
+
+1. Ensure terminal-notifier is installed: `brew install terminal-notifier`
+2. Test notifications manually: `terminal-notifier -message 'Test' -title 'B2Sync Test'`
+3. Check macOS notification permissions for the application
 
 ### Permission Issues
 

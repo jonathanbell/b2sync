@@ -60,6 +60,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	notif.NotifyStartup()
+
 	ticker := time.NewTicker(cfg.SyncFrequency.ToDuration())
 	defer ticker.Stop()
 
@@ -87,6 +89,7 @@ func main() {
 			performSync()
 		case sig := <-sigChan:
 			log.Info(fmt.Sprintf("Received signal %v, shutting down", sig))
+			notif.NotifyShutdown()
 			return
 		}
 	}
