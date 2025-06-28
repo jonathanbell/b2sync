@@ -62,6 +62,7 @@ type Config struct {
 	NotificationThreshold int        `json:"notification_threshold"`
 	LogLevel              string     `json:"log_level"`
 	LogDir                string     `json:"log_dir"`
+	KeepDays              int        `json:"keep_days"`
 }
 
 func DefaultConfig() *Config {
@@ -77,6 +78,7 @@ func DefaultConfig() *Config {
 		NotificationThreshold: 5,
 		LogLevel:              "INFO",
 		LogDir:                filepath.Join(homeDir, "Library", "Logs", "b2sync"),
+		KeepDays:              30,
 	}
 }
 

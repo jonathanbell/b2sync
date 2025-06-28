@@ -12,5 +12,6 @@
   "sync_frequency": "10m",
   "notification_threshold": 5,
   "log_level": "INFO",
-  "log_dir": "/Users/myuser/Library/Logs/b2sync"
+  "log_dir": "/Users/myuser/Library/Logs/b2sync",
+  "keep_days": 30
 }

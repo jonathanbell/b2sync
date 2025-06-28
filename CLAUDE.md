@@ -34,6 +34,9 @@ chmod +x scripts/install-launchd.sh && ./scripts/install-launchd.sh
 launchctl load ~/Library/LaunchAgents/com.b2sync.agent.plist
 launchctl unload ~/Library/LaunchAgents/com.b2sync.agent.plist
 launchctl list | grep b2sync
+
+# Kill all b2sync processes (handles both built binary and go run)
+pkill -f "b2sync\|cmd/b2sync/main.go"
 ```
 
 ### Testing and Verification

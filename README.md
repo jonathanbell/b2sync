@@ -152,6 +152,9 @@ launchctl unload ~/Library/LaunchAgents/com.b2sync.agent.plist
 # Check if running
 launchctl list | grep b2sync
 
+# Kill all b2sync processes (handles both built binary and go run)
+pkill -f "b2sync\|cmd/b2sync/main.go"
+
 # View service logs
 tail -f ~/Library/Logs/b2sync/b2sync-$(date +%Y-%m-%d).log
 ```
