@@ -20,7 +20,7 @@ sudo cp ./b2sync "$BINARY_PATH"
 sudo chmod +x "$BINARY_PATH"
 
 echo "Creating LaunchAgent plist at $PLIST_PATH..."
-cat > "$PLIST_PATH" << EOF
+cat >"$PLIST_PATH" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -66,7 +66,7 @@ echo "  Status:  launchctl list | grep b2sync"
 echo ""
 echo "Logs are available at: $HOME/Library/Logs/b2sync/"
 echo ""
-echo "Don't forget to:"
+echo "Don't forget to (you should have done this already):"
 echo "1. Install and configure the b2 CLI tool"
 echo "2. Create your configuration file at ~/.config/b2sync/config.json"
 echo "3. Use the example config at configs/config.example.json as a template"
