@@ -151,6 +151,7 @@ func (m *Manager) syncPair(pair config.SyncPair) SyncResult {
 	if m.config.KeepDays > 0 {
 		args = append(args, "--keep-days", strconv.Itoa(m.config.KeepDays))
 	}
+	args = append(args, "--exclude-regex", `(.*\.DS_Store)|(.*\.Spotlight-V100)|(.*\.localized)|(.*\.wd_tv/)`)
 	args = append(args, pair.Source, pair.Destination)
 	
 	cmd := exec.Command("b2", args...)
