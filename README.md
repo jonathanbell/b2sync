@@ -224,7 +224,7 @@ To completely remove B2Sync:
 
 ```bash
 # Stop and unload the service
-launchctl unload ~/Library/LaunchAgents/com.b2sync.agent.plist
+sudo launchctl unload ~/Library/LaunchAgents/com.b2sync.agent.plist
 
 # Remove files
 rm ~/Library/LaunchAgents/com.b2sync.agent.plist
