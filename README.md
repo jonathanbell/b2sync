@@ -338,3 +338,7 @@ b2sync/
 │   └── install-launchd.sh       # Installation script for launchd
 └── README.md                    # This file
 ```
+
+## TODO
+
+- [ ] Tests!

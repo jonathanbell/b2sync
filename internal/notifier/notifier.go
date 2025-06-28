@@ -3,6 +3,7 @@ package notifier
 import (
 	"fmt"
 	"os/exec"
+	"strings"
 
 	"b2sync/internal/logger"
 	"b2sync/internal/sync"
@@ -66,20 +67,33 @@ func (n *Notifier) NotifySyncError(err error) {
 	n.sendNotification(title, message)
 }
 
+func (n *Notifier) NotifySyncSkipped() {
+	title := "B2Sync Info"
+	message := "Sync skipped - another sync is already in progress"
+	n.sendNotification(title, message)
+}
+
 func (n *Notifier) NotifySyncResults(results []sync.SyncResult, threshold int) {
 	totalFiles := 0
 	hasErrors := false
+	hasSkippedSync := false
 
 	for _, result := range results {
 		if !result.Success {
-			hasErrors = true
-			n.NotifySyncError(result.Error)
+			// Check if this is a "sync already running" error
+			if result.Error != nil && strings.Contains(result.Error.Error(), "sync already running") {
+				hasSkippedSync = true
+				n.NotifySyncSkipped()
+			} else {
+				hasErrors = true
+				n.NotifySyncError(result.Error)
+			}
 		} else {
 			totalFiles += result.FilesCount
 		}
 	}
 
-	if !hasErrors && totalFiles >= threshold {
+	if !hasErrors && !hasSkippedSync && totalFiles >= threshold {
 		title := "B2Sync Complete"
 		message := fmt.Sprintf("Successfully synced %d files to Backblaze B2", totalFiles)
 		n.sendNotification(title, message)
