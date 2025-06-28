@@ -170,12 +170,35 @@ func (m *Manager) syncPair(pair config.SyncPair) SyncResult {
 }
 
 func (m *Manager) parseFilesCount(output string) int {
-	re := regexp.MustCompile(`(\d+) files? uploaded`)
-	matches := re.FindStringSubmatch(output)
-	if len(matches) > 1 {
-		count, _ := strconv.Atoi(matches[1])
-		return count
+	// First try to parse summary patterns
+	patterns := []string{
+		`(\d+) files? uploaded`,
+		`uploaded (\d+) files?`,
+		`(\d+) files? transferred`,
+		`transferred (\d+) files?`,
 	}
-
-	return 0
+	
+	for _, pattern := range patterns {
+		re := regexp.MustCompile(pattern)
+		matches := re.FindStringSubmatch(output)
+		if len(matches) > 1 {
+			if count, err := strconv.Atoi(matches[1]); err == nil && count > 0 {
+				return count
+			}
+		}
+	}
+	
+	// If no summary found, count individual upload operations
+	uploadRe := regexp.MustCompile(`^upload\s+\S+`)
+	lines := strings.Split(output, "\n")
+	uploadCount := 0
+	
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if uploadRe.MatchString(line) {
+			uploadCount++
+		}
+	}
+	
+	return uploadCount
 }
