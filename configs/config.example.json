@@ -1,0 +1,16 @@
+{
+  "sync_pairs": [
+    {
+      "source": "/Users/myuser/Pictures",
+      "destination": "b2://your-bucket-name/Pictures"
+    },
+    {
+      "source": "/Users/myuser/Documents",
+      "destination": "b2://your-bucket-name/Documents"
+    }
+  ],
+  "sync_frequency": "10m",
+  "notification_threshold": 5,
+  "log_level": "INFO",
+  "log_dir": "/Users/myuser/Library/Logs/b2sync"
+}
