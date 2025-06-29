@@ -102,9 +102,11 @@ tail -f ~/Library/Logs/b2sync/b2sync-$(date +%Y-%m-%d).log
 - **macOS**: Platform-specific (LaunchAgent)
 - **Go 1.24.4+**: For building
 
+**Important**: If using Homebrew, ensure both `b2` and `terminal-notifier` are installed via `brew`. The LaunchAgent is configured to include `/opt/homebrew/bin` in its PATH to locate these dependencies.
+
 ### Runtime Behavior
 
-- Runs as background daemon with configurable sync intervals
+- Runs in the background as a user LaunchAgent with configurable sync intervals
 - Automatic startup via macOS LaunchAgent
 - PID-based process safety prevents overlapping syncs
 - Daily log rotation with structured logging
