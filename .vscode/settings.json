@@ -9,9 +9,11 @@
     "lipo",
     "logfile",
     "myuser",
+    "notif",
     "osascript",
     "pids",
     "pkill",
+    "venv",
     "Warnf"
   ]
 }

@@ -32,7 +32,9 @@ type Manager struct {
 func New(cfg *config.Config, log *logger.Logger) *Manager {
 	homeDir, _ := os.UserHomeDir()
 	pidDir := filepath.Join(homeDir, ".config", "b2sync", "pids")
-	os.MkdirAll(pidDir, 0755)
+	if err := os.MkdirAll(pidDir, 0755); err != nil {
+		log.Errorf("Failed to create PID directory: %v", err)
+	}
 
 	return &Manager{
 		config: cfg,
@@ -151,9 +153,9 @@ func (m *Manager) syncPair(pair config.SyncPair) SyncResult {
 	if m.config.KeepDays > 0 {
 		args = append(args, "--keep-days", strconv.Itoa(m.config.KeepDays))
 	}
-	args = append(args, "--exclude-regex", `(.*\.DS_Store)|(.*\.Spotlight-V100)|(.*\.localized)|(.*\.wd_tv/)`)
+	args = append(args, "--exclude-regex", `(.*\.DS_Store)|(.*\.Spotlight-V100)|(.*\.localized)|(.*\.wd_tv/)|(.*node_modules/)|(.*\.venv/)`)
 	args = append(args, pair.Source, pair.Destination)
-	
+
 	cmd := exec.Command("b2", args...)
 	output, err := cmd.CombinedOutput()
 
@@ -184,7 +186,7 @@ func (m *Manager) parseFilesCount(output string) int {
 		`(\d+) files? transferred`,
 		`transferred (\d+) files?`,
 	}
-	
+
 	for _, pattern := range patterns {
 		re := regexp.MustCompile(pattern)
 		matches := re.FindStringSubmatch(output)
@@ -194,18 +196,18 @@ func (m *Manager) parseFilesCount(output string) int {
 			}
 		}
 	}
-	
+
 	// If no summary found, count individual upload operations
 	uploadRe := regexp.MustCompile(`^upload\s+\S+`)
 	lines := strings.Split(output, "\n")
 	uploadCount := 0
-	
+
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
 		if uploadRe.MatchString(line) {
 			uploadCount++
 		}
 	}
-	
+
 	return uploadCount
 }

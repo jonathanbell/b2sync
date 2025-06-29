@@ -70,14 +70,14 @@ func main() {
 
 	performSync := func() {
 		log.Debug("Starting sync cycle")
-		
+
 		if err := log.RotateIfNeeded(); err != nil {
 			log.Warnf("Log rotation failed: %v", err)
 		}
 
 		results := syncManager.SyncAll()
 		notif.NotifySyncResults(results, cfg.NotificationThreshold)
-		
+
 		log.Debug("Sync cycle completed")
 	}
 
